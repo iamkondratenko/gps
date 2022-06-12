@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <button id="start">Start</button>
+        <button id="stop">Stop</button>
+        <div id="cp"></div>
+        <ul id="lp">
+        </ul>
+    </div>
+</body>
+<script>
+
+    var currenPos = document.getElementById('cp')
+
+    window.addEventListener('load', function () {
+        navigator.geolocation.getCurrentPosition(function(position) {
+    let lat = position.coords.latitude;
+    let long = position.coords.longitude;
+
+    currenPos.append(long, lat)
+
+    addPos(lat, long)
+  });
+    })
+
+
+    function addPos(lat, long) {
+
+        let listPos = JSON.parse(localStorage.getItem('listPos')) || []
+
+        listPos.push({
+            lat: lat,
+            long: long,
+            time: 'time'
+        })
+
+        localStorage.setItem('listPos', JSON.stringify(listPos))
+        console.log(Date())
+    }
+</script>
+</html>
