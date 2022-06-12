@@ -10,6 +10,10 @@
     <div id="app">
         <button id="start">Start</button>
         <button id="stop">Stop</button>
+        <br><br><button onClick="(function(){
+            localStorage.removeItem('listPos')
+            return false;
+        })();return false;">Clear</button>
         <div id="cp"></div>
         <ul id="lp">
         </ul>
@@ -18,31 +22,56 @@
 <script>
 
     var currenPos = document.getElementById('cp')
+    var listPos = document.getElementById('lp')
+
+    var start = false
 
     window.addEventListener('load', function () {
-        navigator.geolocation.getCurrentPosition(function(position) {
-    let lat = position.coords.latitude;
-    let long = position.coords.longitude;
+       
+        setInterval(() => {
+            if (start) {
+                getCurrentPos()
+            }
+        }, 2000);
 
-    currenPos.append(long, lat)
-
-    addPos(lat, long)
-  });
+        document.getElementById('start').addEventListener('click', function () {
+            start = true
+        })
+        document.getElementById('stop').addEventListener('click', function () {
+            start = false
+        })
     })
 
+    
 
     function addPos(lat, long) {
 
         let listPos = JSON.parse(localStorage.getItem('listPos')) || []
 
+        var time = new Date().getTime()
+
         listPos.push({
             lat: lat,
             long: long,
-            time: 'time'
+            time: time
         })
 
         localStorage.setItem('listPos', JSON.stringify(listPos))
-        console.log(Date())
+        console.log(time)
+    }
+
+    function getCurrentPos() {
+        navigator.geolocation.getCurrentPosition(function(position) {
+    let lat = position.coords.latitude;
+    let long = position.coords.longitude;
+
+    let node = document.createElement('li')
+    node.innerHTML = `long: ${long} lat: ${lat}.`
+
+    listPos.prepend(node)
+    currenPos.innerHTML = `long: ${long} lat: ${lat}.`
+    addPos(lat, long)
+  });
     }
 </script>
 </html>
